@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EchoGuard — Alexa+ Ambient Security</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Navigation / Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-symbol">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">echoguard</span>
+          <span class="brand-chip">Alexa+ Core</span>
+        </div>
+      </div>
+
+      <div class="nav-status-group">
+        <div class="status-chip">
+          <span class="chip-dot live"></span>
+          <span>MCP Transport: Active</span>
+        </div>
+        <div class="status-chip">
+          <span class="chip-dot bedrock"></span>
+          <span>AWS Bedrock (us-east-1)</span>
+        </div>
+        <div class="status-chip">
+          <span class="chip-dot ring"></span>
+          <span>Ring Perimeter: Armed</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="page-container">
+    <!-- Hero / Headline Bar -->
+    <section class="hero-bar">
+      <div class="hero-text-wrap">
+        <h1 class="hero-title">Ambient Voice Sentinel &amp; Perimeter Defense</h1>
+        <p class="hero-subtitle">Continuous acoustic deepfake verification and autonomous smart home quarantine for Alexa+ and Ring.</p>
+      </div>
+      <div class="hero-meta">
+        <div class="meta-card">
+          <span class="meta-heading">Host Device</span>
+          <span class="meta-body">Echo Show 15 &bull; Living Room</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-heading">Protocol Spec</span>
+          <span class="meta-body">MCP 2025-11-25 (Streamable)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workbench Grid -->
+    <div class="workbench-grid">
+      <!-- Left Column: Audio Ingestion & Oscilloscope -->
+      <div class="grid-column">
+        <!-- Audio Monitor Card -->
+        <div class="surface-card">
+          <div class="card-head">
+            <div class="card-title-group">
+              <span class="section-label">ACOUSTIC INGESTION</span>
+              <h2 class="card-heading">Signal Scope &amp; Biometrics</h2>
+            </div>
+            <div class="card-badge" id="streamPill">STANDBY</div>
+          </div>
+
+          <!-- Expansive Oscilloscope -->
+          <div class="oscilloscope-wrapper">
+            <canvas id="waveformCanvas"></canvas>
+            <div class="scope-overlay-meta">
+              <div class="scope-tag" id="spectralCentroid">Centroid: 0 Hz</div>
+              <div class="scope-tag" id="zcrVal">ZCR: 0.000</div>
+              <div class="scope-tag" id="jitterIndicator">Biological Jitter: Verified</div>
+            </div>
+          </div>
+
+          <!-- Transcript Input & Voice Controls -->
+          <div class="input-section">
+            <div class="input-label-row">
+              <label for="transcriptInput" class="input-label">Intercepted Ambient Utterance</label>
+              <span class="input-counter" id="charCount">0 characters</span>
+            </div>
+            <textarea id="transcriptInput" rows="3" placeholder="Speak into microphone or select a security scenario below..."></textarea>
+            
+            <div class="button-row">
+              <button id="micBtn" class="btn btn-neutral">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="22"/>
+                </svg>
+                <span id="micText">Stream Live Mic</span>
+              </button>
+              <button id="analyzeBtn" class="btn btn-solid">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Execute Analysis
+              </button>
+              <button id="clearBtn" class="btn btn-ghost">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scenarios / Test Vectors Card -->
+        <div class="surface-card">
+          <div class="card-head">
+            <div class="card-title-group">
+              <span class="section-label">TEST SUITE</span>
+              <h2 class="card-heading">Security Scenarios &amp; Replay Vectors</h2>
+            </div>
+          </div>
+          <div class="scenario-grid" id="scenariosGrid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Threat Telemetry & Quarantine Peripherals -->
+      <div class="grid-column">
+        <!-- Threat Metrics Card -->
+        <div class="surface-card">
+          <div class="card-head">
+            <div class="card-title-group">
+              <span class="section-label">REAL-TIME THREAT INDEX</span>
+              <h2 class="card-heading">Autonomous Assessment</h2>
+            </div>
+            <div class="threat-pill safe" id="threatStatusBadge">VERIFIED NORMAL</div>
+          </div>
+
+          <div class="metrics-container">
+            <div class="primary-metric">
+              <div class="metric-meta-label">Composite Risk Rating</div>
+              <div class="metric-huge" id="riskScoreVal">0%</div>
+              <div class="progress-track">
+                <div class="progress-fill" id="riskBarFill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="sub-metrics-grid">
+              <div class="sub-metric-card">
+                <span class="sub-label">Acoustic Deepfake Probability</span>
+                <span class="sub-value" id="deepfakeProbVal">CLEAN (0.00)</span>
+                <span class="sub-detail" id="acousticDetail">Phase continuity within normal human variance</span>
+              </div>
+              <div class="sub-metric-card">
+                <span class="sub-label">AWS Bedrock Coercion Classification</span>
+                <span class="sub-value" id="coercionSeverityVal">BENIGN</span>
+                <span class="sub-detail" id="bedrockDetail">No high-stress extortion or urgency markers</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connected Smart Home Perimeter Card -->
+        <div class="surface-card">
+          <div class="card-head">
+            <div class="card-title-group">
+              <span class="section-label">SMART HOME ACCESS</span>
+              <h2 class="card-heading">Perimeter &amp; Ring Peripherals</h2>
+            </div>
+            <button id="overrideBtn" class="btn-pill-warning" style="display: none;">
+              Unlock Override
+            </button>
+          </div>
+
+          <div class="peripherals-list">
+            <div class="peripheral-item" id="devRingFront">
+              <div class="item-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <div class="item-info">
+                <span class="item-name">Ring Front Door Smart Deadbolt</span>
+                <span class="item-sub">Access Node 01 &bull; Direct Lock Protocol</span>
+              </div>
+              <span class="item-status secure">ARMED &bull; NORMAL</span>
+            </div>
+
+            <div class="peripheral-item" id="devEchoPay">
+              <div class="item-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              </div>
+              <div class="item-info">
+                <span class="item-name">Alexa 1-Click Voice Purchasing</span>
+                <span class="item-sub">Amazon Pay Financial Gateway</span>
+              </div>
+              <span class="item-status secure">ACTIVE</span>
+            </div>
+
+            <div class="peripheral-item" id="devRingGarage">
+              <div class="item-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              </div>
+              <div class="item-info">
+                <span class="item-name">Ring Garage Overhead Controller</span>
+                <span class="item-sub">Secondary Barrier &bull; Auto-Reversal</span>
+              </div>
+              <span class="item-status secure">LOCKED</span>
+            </div>
+
+            <div class="peripheral-item" id="devGuardianAlert">
+              <div class="item-icon-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </div>
+              <div class="item-info">
+                <span class="item-name">Caregiver Emergency Dispatch</span>
+                <span class="item-sub">AWS SNS (SMS + Push Notification Router)</span>
+              </div>
+              <span class="item-status neutral">STANDBY (2 GUARDIANS)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MCP Event Telemetry Log Card -->
+        <div class="surface-card">
+          <div class="card-head">
+            <div class="card-title-group">
+              <span class="section-label">PROTOCOL STREAM</span>
+              <h2 class="card-heading">Model Context Protocol (JSON-RPC 2.0)</h2>
+            </div>
+          </div>
+          <div class="log-stream-window" id="mcpTerminalLogs">
+            <div class="log-row info">[system] mcp server mounted at /mcp (spec 2025-11-25)</div>
+            <div class="log-row info">[system] 4 registered tools: verify_voice_authenticity, detect_coercion_intent, quarantine_smart_home, dispatch_guardian_alert</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PIN Override Modal -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 class="modal-heading">Perimeter Quarantine Override</h3>
+        <p class="modal-subheading">Enter the authorized 4-digit caregiver PIN to release autonomous lockdown.</p>
+      </div>
+      <div class="pin-entry-container">
+        <input type="password" id="pinInput" maxlength="4" placeholder="••••" autofocus>
+      </div>
+      <div class="modal-buttons">
+        <button id="pinCancelBtn" class="btn btn-neutral">Cancel</button>
+        <button id="pinSubmitBtn" class="btn btn-solid">Release Lockdown</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incident Banner -->
+  <div class="toast-banner" id="incidentAlert">
+    <div class="toast-content">
+      <span class="toast-badge">SECURITY ALERT</span>
+      <div class="toast-title" id="incidentTitle">Quarantine Active</div>
+      <div class="toast-text" id="incidentDesc">Ring deadbolts engaged and payment gateways frozen.</div>
+    </div>
+    <button id="incidentAcknowledgeBtn" class="btn-sm-ghost">Dismiss</button>
+  </div>
+
+  <footer class="page-footer">
+    <div class="footer-container">
+      <span>Amazon Developer Hackathon 2026 &bull; <strong>Alexa+ Protocol Architecture</strong></span>
+      <div class="footer-anchors">
+        <a href="/mcp" target="_blank">MCP Endpoint</a>
+        <a href="/docs/AMAZON_FRICTION_LOG.md" target="_blank">Friction Log</a>
+        <a href="/api/v1/system-status" target="_blank">System API</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
